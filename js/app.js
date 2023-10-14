@@ -1,3 +1,7 @@
+// کاربرد
+// چی میگیره
+// چی میده
+
 let form = document.querySelector('#request-quote')
 
 form.addEventListener('submit', submitForm)
@@ -30,58 +34,66 @@ function getNewYears() {
     return newYears
 }
 
-// dariaft sal kononi , namayesh an dar safhe namaesh
-function salSakht() {
-    let newYears = getNewYears()
-    let max = newYears
-    let min = newYears - 20
-
-    // select div sal sakht
+// template year in option 
+function temolateYear(i, info) {
     let year = document.querySelector('#year')
 
     // sakht element option
     let option = document.createElement('option')
-    option.value = ''
-    option.textContent = `- انتخاب -`
+    option.value = i
+    option.textContent = info
 
     year.appendChild(option)
-
-    // chap (namaesh) sal kononi ta 20 sal gozashth
-    for (let i = max; i >= min; i--) {
-        // sakht element option
-        let option = document.createElement('option')
-        option.value = i
-        option.textContent = `سال ${i} `
-
-        year.appendChild(option)
-    }
 }
 
 
+// dariaft sal kononi , namayesh an dar safhe namaesh
+function salSakht() {
+    // max and min year
+    let newYears = getNewYears()
+    let max = newYears
+    let min = newYears - 20
+
+    // 
+    temolateYear('', '- انتخاب - ')
+
+    // chap (namaesh) sal kononi ta 20 sal gozashth
+    for (let i = max; i >= min; i--) {
+        temolateYear(i, `سال ${i}`)
+    }
+}
+
+// If the form is submitted
 function submitForm(e) {
+    // Do not refresh the page during submission
     e.preventDefault()
 
-    const make = document.querySelector('#make').value
-    const year = document.querySelector('#year').value
-    const cheakBox = document.querySelector('input[name="level"]:checked').value
+    // Transferring input values to the check function (is it full or empty)
+    ceackInputValues(getValueLInputs().make, getValueLInputs().year, getValueLInputs().cheakBox)
+}
 
+// Getting inputs from the user
+function getValueLInputs() {
+    let valueInputs = {
+        make: document.querySelector('#make').value,
+        year: document.querySelector('#year').value,
+        cheakBox: document.querySelector('input[name="level"]:checked').value
+    }
+    return valueInputs
+}
 
+// Checking the content of the inputs
+function ceackInputValues(make, year, cheakBox) {
     if (make === '' || year === '' || cheakBox === '') {
         // calling function error form
         displayMsg('گند زدی داش')
     } else {
-        let valueForm = {
-            carMake: make,
-            carYear: year,
-            carCheakBox: cheakBox
-        }
-
         // fara khani va meghdar dahi ba fanction noe mashin 
-        mohasebehNoeMashin(valueForm.carMake)
+        mohasebehNoeMashin(make)
         // fara khani va meghdar dahi ba fanction sal sakht mashin 
-        mohasebehSalSakht(valueForm.carYear)
+        mohasebehSalSakht(year)
         // fara khani va meghdar dahi ba fanction noe mashin 
-        mohasebehNoeBimeh(valueForm.carCheakBox)
+        mohasebehNoeBimeh(cheakBox)
     }
 }
 
@@ -112,6 +124,7 @@ function mohasebehSalSakht(info) {
     return ((getNewYears() - info) * 0.005)
 }
 
+// Insurance type calculation function
 function mohasebehNoeBimeh(info) {
     let base = 2000000
     let CarCoefficient = 0
