@@ -68,8 +68,9 @@ function submitForm(e) {
     // Do not refresh the page during submission
     e.preventDefault()
 
-    // Transferring input values to the check function (is it full or empty)
-    ceackInputValues(getValueLInputs().make, getValueLInputs().year, getValueLInputs().cheakBox)
+    // Proccess...
+    proccessInsurance(getValueLInputs().make, getValueLInputs().year, getValueLInputs().cheakBox)
+
 }
 
 // Getting inputs from the user
@@ -82,19 +83,34 @@ function getValueLInputs() {
     return valueInputs
 }
 
-// Checking the content of the inputs
-function ceackInputValues(make, year, cheakBox) {
-    if (make === '' || year === '' || cheakBox === '') {
-        // calling function error form
-        displayMsg('گند زدی داش')
-    } else {
+// Proccess Insurance
+function proccessInsurance(make, year, level, errorMsg = 'Error!') {
+    if (ceackInputValues(make, year, level)) {
+        // 3 farayand
         // fara khani va meghdar dahi ba fanction noe mashin 
         mohasebehNoeMashin(make)
         // fara khani va meghdar dahi ba fanction sal sakht mashin 
         mohasebehSalSakht(year)
         // fara khani va meghdar dahi ba fanction noe mashin 
         mohasebehNoeBimeh(cheakBox)
+    } else {
+        // show error message ...
+        displayMsg(errorMsg)
     }
+}
+
+// Checking the content of the inputs
+// validation
+function ceackInputValues(make, year, cheakBox) {
+    let status = false
+
+    if (make === '' || year === '' || cheakBox === '') {
+        status = false
+    } else {
+        status = true
+    }
+
+    return status
 }
 
 // nesbat be noe mashin ek zarib dariaft miSavad
