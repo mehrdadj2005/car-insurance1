@@ -1,79 +1,85 @@
-// کاربرد
-// چی میگیره
-// چی میده
-
 let form = document.querySelector('#request-quote')
 
 form.addEventListener('submit', submitForm)
 
-
 document.addEventListener('DOMContentLoaded', afterLoad)
 
+// After loading the site, the year of construction function should be executed
 function afterLoad() {
     salSakht()
 }
 
+// Get the current year and convert it to type number
 function getNewYears() {
-    // baraye taskhis noae type adad in array ra misazim
-    persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g],
-        arabicNumbers = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g]
-
     // dariaft sal shamsi kononi
     let newYears = new Date().toLocaleDateString('fa-IR')
-    // joda kardan sal az roz va mah
+
+    // Separate the year from the whole date
     newYears = newYears.slice(0, 4)
 
-    // tabdil adad farsi va arabi be english
-    for (let i = 0; i < 10; i++) {
-        // replace = jaigozini
-        newYears = newYears.replace(persianNumbers[i], i).replace(arabicNumbers[i], i)
-    }
+    // Convert the obtained year from string to number
+    newYears = toNumber(newYears)
 
-    // tabdil type string be number
-    newYears = parseInt(newYears)
+    // Return of the current year
     return newYears
 }
 
+// Convert string to number
+function toNumber(info) {
+    // To recognize the language of numbers, this array is created
+    persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g],
+        arabicNumbers = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g]
+
+    // Convert Persian and Arabic numbers to English
+    for (let i = 0; i < 10; i++) {
+        info = info.replace(persianNumbers[i], i).replace(arabicNumbers[i], i)
+    }
+
+    // tabdil type string be number
+    info = parseInt(info)
+    // Returns a number by typing a number
+    return info
+}
+
 // template year in option 
-function temolateYear(i, info) {
+// get (1) value option element
+// get (2) textContent option element
+function templateYear(e, info) {
+    // Select the position of the type of years
     let year = document.querySelector('#year')
 
-    // sakht element option
+    // Making an option element
     let option = document.createElement('option')
-    option.value = i
+    option.value = e
     option.textContent = info
 
+    // Print the element made in place of years (year)
     year.appendChild(option)
 }
 
 
-// dariaft sal kononi , namayesh an dar safhe namaesh
+// Commanding the construction of elements for years
 function salSakht() {
     // max and min year
+
     let newYears = getNewYears()
+
+    // Get the current year
     let max = newYears
+    // Get previous years
     let min = newYears - 20
 
-    // 
-    temolateYear('', '- انتخاب - ')
+    // Print the default element option
+    templateYear('', '- انتخاب - ')
 
-    // chap (namaesh) sal kononi ta 20 sal gozashth
+    // Print of previous years
     for (let i = max; i >= min; i--) {
-        temolateYear(i, `سال ${i}`)
+        templateYear(i, `سال ${i}`)
     }
 }
 
-// If the form is submitted
-function submitForm(e) {
-    // Do not refresh the page during submission
-    e.preventDefault()
-
-    // Proccess...
-    proccessInsurance(getValueLInputs().make, getValueLInputs().year, getValueLInputs().cheakBox)
-
-}
-
-// Getting inputs from the user
+// Get user validation values
+// Return user validation values
 function getValueLInputs() {
     let valueInputs = {
         make: document.querySelector('#make').value,
@@ -81,6 +87,16 @@ function getValueLInputs() {
         cheakBox: document.querySelector('input[name="level"]:checked').value
     }
     return valueInputs
+}
+
+// If the form is submitted
+function submitForm(e) {
+    // Do not refresh the page during submission
+    e.preventDefault()
+
+    // Calling and assigning value to the calculation function controller function
+    proccessInsurance(getValueLInputs().make, getValueLInputs().year, getValueLInputs().cheakBox)
+
 }
 
 // Proccess Insurance
@@ -113,7 +129,7 @@ function ceackInputValues(make, year, cheakBox) {
     return status
 }
 
-// nesbat be noe mashin ek zarib dariaft miSavad
+// It returns a coefficient according to the type of machine
 function mohasebehNoeMashin(info) {
     // moteghaer baraeh khoroji nahaei
     let CarCoefficient = 0
@@ -135,12 +151,12 @@ function mohasebehNoeMashin(info) {
     return CarCoefficient
 }
 
-// zarinb sal sakht mashin
+// It returns a coefficient according to the year of manufacture of the car
 function mohasebehSalSakht(info) {
     return ((getNewYears() - info) * 0.005)
 }
 
-// Insurance type calculation function
+// According to the type of car insurance, it returns a coefficient
 function mohasebehNoeBimeh(info) {
     let base = 2000000
     let CarCoefficient = 0
